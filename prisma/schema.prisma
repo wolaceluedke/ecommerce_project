@@ -18,7 +18,7 @@ datasource db {
   }
 
   model Product {
-    id String @id default(uuid())
+    id String @id @default(uuid())
     name String
     slug String
     description String
@@ -26,5 +26,5 @@ datasource db {
     imageUrl String
     category Category @relation(fields: [categoryId], references: [id])
     categoryId String
-    discountPercent int @default(0)
+    discountPercentage Int @default(0)
   }
