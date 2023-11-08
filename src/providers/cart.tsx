@@ -2,7 +2,7 @@
 
 import { ProductWithTotalPrice } from "@/helpers/product";
 import { Product } from "@prisma/client";
-import { ReactNode, createContext, useState } from "react";
+import { ReactNode, createContext, useMemo, useState } from "react";
 
 export interface CartProduct extends ProductWithTotalPrice {
     quantity: number,
@@ -14,6 +14,9 @@ export interface CartProduct extends ProductWithTotalPrice {
     cartTotalPrice: number;
     cartBasePrice: number;
     cartTotalDiscount: number;
+    total: number;
+    subtotal: number;
+    totalDiscount: number
     addProductToCart: (product: CartProduct) => void;
     decreaseProductQuantity: (ProductId: string) => void;
     increaseProductQuantity: (ProductId: string) => void;
@@ -25,6 +28,9 @@ export const CartContext = createContext<ICartContext>({
     cartTotalPrice: 0,
     cartBasePrice: 0,
     cartTotalDiscount: 0,
+    total: 0,
+    subtotal: 0,
+    totalDiscount: 0,
     addProductToCart: () => {},
     decreaseProductQuantity: () => {},
     increaseProductQuantity: () => {},
@@ -33,6 +39,24 @@ export const CartContext = createContext<ICartContext>({
 
 const CartProvider = ({children}: { children: ReactNode}) => {
     const [products, setProducts ] = useState<CartProduct[]>([])
+
+
+    //Total sem descontos
+    const subtotal = useMemo(() => {
+        return products.reduce((acc, product) => {
+            return acc + Number(product.basePrice) 
+        }, 0)
+    }, [products])
+
+    //total com descontos
+    const total = useMemo(() => {
+        return products.reduce((acc, product) => {
+        return  acc + product.totalPrice  
+        }, 0)
+    }, [products])
+
+
+    const totalDiscount = total - subtotal
 
     const addProductToCart = (product: CartProduct) => {
 
@@ -95,6 +119,9 @@ const CartProvider = ({children}: { children: ReactNode}) => {
             decreaseProductQuantity,
             increaseProductQuantity,
             removeProductFromCart,
+            total,
+            subtotal,
+            totalDiscount,
             cartTotalPrice: 0,
             cartBasePrice: 0,
             cartTotalDiscount: 0,
