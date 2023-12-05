@@ -51,7 +51,8 @@ const handleFinishPucharseClick = async () => {
           </div>
         </ScrollArea>
       </div>
-        <div className="flex flex-col gap-3">
+        {products.length > 0 && (
+          <div className="flex flex-col gap-3">
           <Separator />
 
           <div className="flex items-center justify-between text-xs">
@@ -80,9 +81,13 @@ const handleFinishPucharseClick = async () => {
               <p>R$ {total.toFixed(2)}</p>
           </div>
 
-          <Button className="uppercase font-bold mt-7" onClick={handleFinishPucharseClick}>Finalizar Compra</Button>
+          <Button 
+          className="uppercase font-bold mt-7" 
+          onClick={handleFinishPucharseClick}>
+            Finalizar Compra</Button>
 
         </div>
+        )}
     </div>
      );
 }
