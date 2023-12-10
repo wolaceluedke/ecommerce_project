@@ -2,7 +2,7 @@
 
 import { ProductWithTotalPrice } from "@/helpers/product";
 import { Product } from "@prisma/client";
-import { ReactNode, createContext, useMemo, useState } from "react";
+import { ReactNode, createContext, useEffect, useMemo, useState } from "react";
 
 export interface CartProduct extends ProductWithTotalPrice {
     quantity: number,
@@ -38,8 +38,13 @@ export const CartContext = createContext<ICartContext>({
 });
 
 const CartProvider = ({children}: { children: ReactNode}) => {
-    const [products, setProducts ] = useState<CartProduct[]>([])
+    const [products, setProducts ] = useState<CartProduct[]>(
+        JSON.parse(localStorage.getItem("@vlc-store/cart-products") || "[]"),
+        );
 
+    useEffect(() => {
+        localStorage.setItem("@vlc-store/cart-products", JSON.stringify(products));
+    }, [products])
 
     //Total sem descontos
     const subtotal = useMemo(() => {
